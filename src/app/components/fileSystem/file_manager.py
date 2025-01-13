@@ -1,7 +1,9 @@
 import os, shutil
 from app.components.fileSystem.file_selector import FileSelector
 from app.components.fileSystem.file_explorer import FileExplorer
-from app.components.fileSystem.interfaces.file_manager_interface import FileManagerInterface
+from app.components.fileSystem.interfaces.file_manager_interface import (
+    FileManagerInterface,
+)
 
 
 class FileManager(FileManagerInterface):

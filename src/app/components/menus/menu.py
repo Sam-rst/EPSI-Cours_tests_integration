@@ -1,5 +1,6 @@
 from app.components.fileSystem.file_manager import FileManager
 
+
 class Menu:
     def __init__(self):
         self.file_manager = FileManager()
@@ -12,12 +13,14 @@ class Menu:
             "Move",
             "Delete",
             "Quit",
-            ]
+        ]
         self.choice = None
 
     def display_commands(self):
         message = "\n--- File Explorer ---\n"
-        message += ''.join([f"{i}. {str(self.commands[i])}\n" for i in range(len(self.commands))])
+        message += "".join(
+            [f"{i}. {str(self.commands[i])}\n" for i in range(len(self.commands))]
+        )
         print(message)
 
     def ask_choice(self, message_input) -> int:
@@ -49,7 +52,9 @@ class Menu:
                 case 3:
                     self.file_manager.file_explorer.display_directory_contents()
                     indices = input("Enter file indices to select (comma-separated): ")
-                    self.file_manager.file_selector.select_files_by_indices(indices, self.file_manager.file_explorer.current_path)
+                    self.file_manager.file_selector.select_files_by_indices(
+                        indices, self.file_manager.file_explorer.current_path
+                    )
                     return True
 
                 case 4:

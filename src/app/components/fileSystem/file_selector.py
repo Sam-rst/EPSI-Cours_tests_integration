@@ -1,5 +1,8 @@
 import os
-from app.components.fileSystem.interfaces.file_selector_interface import FileSelectorInterface
+from app.components.fileSystem.interfaces.file_selector_interface import (
+    FileSelectorInterface,
+)
+
 
 class FileSelector(FileSelectorInterface):
     def __init__(self):
@@ -19,7 +22,7 @@ class FileSelector(FileSelectorInterface):
         """Select files based on indices"""
         try:
             # Convert input string to list of indices
-            selected_indices = [int(i.strip()) for i in indices.split(',')]
+            selected_indices = [int(i.strip()) for i in indices.split(",")]
 
             # Reset previous selection
             self.selected_files.clear()
@@ -27,7 +30,9 @@ class FileSelector(FileSelectorInterface):
             # Select files
             for index in selected_indices:
                 if 0 <= index < len(self.current_directory_contents):
-                    full_path = os.path.join(directory_path, self.current_directory_contents[index])
+                    full_path = os.path.join(
+                        directory_path, self.current_directory_contents[index]
+                    )
                     self.selected_files.append(full_path)
 
             print("Selected files:")
