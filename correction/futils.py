@@ -1,6 +1,6 @@
 import os
 from typing import Callable
-from ui import UserInterface
+from .ui import UserInterface
 
 
 class FileListProvider:
@@ -111,26 +111,58 @@ class FileExplorer(FileListProvider):
 
 
 class FileManager:
-    def __init__(self, sel: FileSelection, fs: FileSystem, ui: UserInterface):
+    def __init__(self, sel, fs, ui, destination=None):
+        """
+        Constructeur du FileManager.
+
+        :param sel: Instance de la classe de sélection de fichiers.
+        :param fs: Instance de la classe de gestion du système de fichiers.
+        :param ui: Instance de la classe de l'interface utilisateur.
+        :param destination: Le répertoire de destination où les fichiers seront copiés/déplacés.
+        """
         self.sel = sel
         self.fs = fs
         self.ui = ui
+        self.destination = destination
+
+    def validate_destination(self, destination):
+        """
+        Vérifie que la destination est un répertoire valide.
+
+        :return: True si le répertoire existe et est valide, False sinon.
+        """
+        if not destination:
+            self.ui.error("Destination path is not provided")
+            return False
+
+        if not os.path.exists(destination):
+            self.ui.error("Destination path does not exist")
+            return False
+
+        if not os.path.isdir(destination):
+            self.ui.error("Destination path is not a directory")
+            return False
+
+        return True
 
     def _process_files(
         self, title: str, action: Callable[[str, str], None], destination: str = None
     ) -> int:
         """Process files based on the action"""
-        try:
-            selected_files = self.sel.get_and_reset()
-            for file in selected_files:
-                action(file, destination)
-            return len(selected_files)
-        except Exception as e:
-            self.ui.error(f"{title}: {e}")
-            return 0
+        count = 0
+        selected_files = self.sel.get_and_reset()
+        for file in selected_files:
+            try:
+                if self.validate_destination(destination):
+                    action(file, destination)
+                    count += 1  # Incrément si aucune exception
+            except Exception as e:
+                self.ui.error(f"{title}: {e}")
+        return count
 
     def copy_files(self, destination) -> int:
         """Copy selected files"""
+        # Vérifier si le chemin de destination existe
         return self._process_files("Copy", self.fs.copy, destination)
 
     def move_files(self, destination) -> int:
